@@ -24,6 +24,9 @@ pip install -U pip
 pip install -e ".[dev]"
 ```
 
+> Note: This project uses a `src/` layout. If you see `ModuleNotFoundError: No module named 'trading_bot'`,
+> you likely skipped the `pip install -e ...` step (or you installed into a different Python/venv than the one you're running).
+
 ## Configure
 1) Copy examples:
 
@@ -56,6 +59,10 @@ Headless:
 ```bash
 python -m trading_bot.main --config config/config.yaml --no-ui
 ```
+
+If you want to run without installing editable, you can also do:
+- PowerShell: `$env:PYTHONPATH="src"; python -m trading_bot.main --config config/config.yaml`
+- bash/zsh: `PYTHONPATH=src python -m trading_bot.main --config config/config.yaml`
 
 ### TUI controls
 - `1..5`: switch screens
