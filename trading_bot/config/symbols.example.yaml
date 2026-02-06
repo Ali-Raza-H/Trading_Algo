@@ -1,0 +1,7 @@
+# Optional aliases for canonical symbol names.
+# Used to map canonical -> actual broker symbol (e.g. EURUSD -> EURUSDm).
+aliases:
+  XAUUSD: ["XAUUSD", "XAUUSDm", "GOLD", "XAUUSD."]
+  EURUSD: ["EURUSD", "EURUSDm", "EURUSD."]
+  GBPUSD: ["GBPUSD", "GBPUSDm", "GBPUSD."]
+

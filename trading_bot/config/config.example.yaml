@@ -1,0 +1,87 @@
+runtime:
+  timezone: "Europe/London"
+  timeframe: "H1"
+  evaluation_mode: "on_candle_close"
+  warmup_bars: 300
+  loop_sleep_seconds: 2
+
+universe:
+  use_symbol_discovery: true
+  discovery_interval_minutes: 360
+  preferred_symbols:
+    ["XAUUSD","EURUSD","GBPUSD","USDJPY","USDCHF","USDCAD","AUDUSD","NZDUSD","EURJPY","GBPJPY"]
+  include_asset_classes:
+    forex: true
+    metals: true
+    indices: true
+    stocks: true
+  discovery_limits:
+    max_symbols_total: 40
+    max_per_class: 20
+
+ranking:
+  top_n: 5
+  min_bars_required: 300
+  filters:
+    max_spread_points: 50
+    max_spread_to_atr_ratio: 0.20
+    market_open_required: true
+  weights:
+    volatility: 0.35
+    trend: 0.30
+    momentum: 0.20
+    cost: 0.15
+  correlation:
+    enabled: true
+    window_bars: 200
+    max_abs_corr: 0.85
+
+strategy:
+  mode: "manual"  # manual | rule_based
+  manual_active: "two_pole_momentum"
+  rule_based:
+    adx_trending: 22
+    adx_ranging: 18
+
+risk:
+  risk_per_trade: 0.005
+  max_daily_loss_pct: 0.02
+  max_drawdown_pct: 0.06
+  max_open_positions_total: 5
+  max_open_positions_per_symbol: 1
+  close_positions_on_breach: false
+  sltp_mode: "rr"  # rr | atr
+  rr:
+    stop_points: 100
+    take_points: 200
+  atr:
+    period: 14
+    sl_mult: 1.5
+    tp_mult: 3.0
+  cooloff:
+    enabled: true
+    losses: 3
+    minutes: 120
+
+execution:
+  trading_enabled: false
+  close_on_exit_signal: true
+  order_type: "market"
+  slippage_points: 20
+  magic_number: 26012026
+  retries:
+    max_attempts: 3
+    backoff_seconds: [1,3,7]
+
+notifications:
+  telegram_enabled: true
+  throttle_seconds: 20
+  daily_summary_time: "21:00"
+
+persistence:
+  db_path: "./data/bot.sqlite"
+
+ui:
+  enabled: true
+  refresh_hz: 2
+

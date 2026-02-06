@@ -1,0 +1,22 @@
+[Unit]
+Description=Trading Bot (MT5 demo)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/trading-bot/trading_bot
+EnvironmentFile=/opt/trading-bot/trading_bot/.env
+ExecStart=/opt/trading-bot/venv/bin/python -m trading_bot.main --config /opt/trading-bot/trading_bot/config/config.yaml
+Restart=always
+RestartSec=3
+TimeoutStopSec=20
+KillSignal=SIGINT
+
+# Logs go to journald
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
