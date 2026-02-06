@@ -6,6 +6,7 @@ import re
 import time
 from dataclasses import asdict
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -86,13 +87,40 @@ class MT5Connector(BrokerConnector):
         except Exception:
             pass
 
+    def _resolve_terminal_path(self, path: str) -> str | None:
+        p = Path(path).expanduser()
+        if not p.is_absolute():
+            p = Path.cwd() / p
+        try:
+            if p.is_file():
+                return str(p)
+            if p.is_dir():
+                for exe in ("terminal64.exe", "terminal.exe"):
+                    candidate = p / exe
+                    if candidate.is_file():
+                        return str(candidate)
+        except Exception:
+            return None
+        return None
+
     def _initialize(self) -> None:
-        ok = self._mt5.initialize(
-            path=self._path,
-            login=self._login,
-            password=self._password,
-            server=self._server,
-        )
+        # MetaTrader5.initialize() fails with error -2 if `path=None` is passed explicitly.
+        # Omit the argument entirely when it's not set.
+        init_kwargs: dict[str, Any] = {"login": self._login, "password": self._password, "server": self._server}
+
+        raw_path = (self._path or "").strip()
+        if raw_path:
+            # Strip accidental surrounding quotes from env files / shells.
+            if (raw_path.startswith('"') and raw_path.endswith('"')) or (raw_path.startswith("'") and raw_path.endswith("'")):
+                raw_path = raw_path[1:-1].strip()
+
+            resolved = self._resolve_terminal_path(os.path.expandvars(raw_path))
+            if resolved:
+                init_kwargs["path"] = resolved
+            else:
+                self._log.warning("invalid MT5_PATH; trying without explicit path", extra={"mt5_path": raw_path})
+
+        ok = self._mt5.initialize(**init_kwargs)
         if not ok:
             code, msg = self._mt5.last_error()
             raise BrokerDisconnectedError(f"mt5.initialize failed: {code} {msg}")
