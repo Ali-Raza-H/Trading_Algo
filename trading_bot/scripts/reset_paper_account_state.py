@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -16,7 +17,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = _parse_args(argv or [])
+    args = _parse_args(argv or sys.argv[1:])
     cfg = load_config(args.config, db_latest_settings_json=None)
     db_path = Path(cfg.persistence.db_path)
     stamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
@@ -42,4 +43,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
-

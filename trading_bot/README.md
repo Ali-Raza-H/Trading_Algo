@@ -81,7 +81,7 @@ y[t] = c1*(x[t] + x[t-1])/2 + c2*y[t-1] + c3*y[t-2]
 ```
 
 ## Systemd (Linux Mint)
-See `systemd/trading-bot.service.example`. Typical workflow:
+See `systemd/trading-bot.service.example` (runs **headless** via `--no-ui`). Typical workflow:
 1) Install under `/opt/trading-bot`
 2) Put `.env` in the working directory (or referenced `EnvironmentFile`)
 3) Enable/start the service:
@@ -104,7 +104,7 @@ To add a new broker:
 ```bash
 cd trading_bot
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # (Linux)  or  .venv\\Scripts\\activate  (Windows)
 pip install -e ".[dev]"
 cp config/config.example.yaml config/config.yaml
 cp .env.example .env
@@ -120,4 +120,3 @@ python -m trading_bot.main --config config/config.yaml
 5) trade appears in TUI + SQLite (`./data/bot.sqlite` by default)
 6) Telegram message received (if configured)
 7) Resources screen shows CPU/RAM/Net/Temps (temps may be N/A on some systems)
-

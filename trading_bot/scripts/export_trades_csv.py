@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
 from pathlib import Path
 
 from trading_bot.core.config import load_config
@@ -17,7 +18,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = _parse_args(argv or [])
+    args = _parse_args(argv or sys.argv[1:])
     cfg = load_config(args.config, db_latest_settings_json=None)
     db = Database(Path(cfg.persistence.db_path))
     db.initialize()
@@ -36,4 +37,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
-
